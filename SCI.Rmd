@@ -1,0 +1,140 @@
+---
+title: "SCI"
+output: html_document
+date: "2024-03-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require("tidyverse")
+require("here")
+require("readr")
+library("plyr")
+require("dplyr")
+require("ggplot2")
+require("lme4")
+library(data.table)
+library(rstatix)
+library(emmeans)
+require("performance")
+require("insight")
+require("magrittr")
+library(see)
+library(modelbased)
+library("jtools")
+require("kableExtra")
+require("huxtable")
+library(ggbeeswarm)
+library("ggpubr")
+library(reshape2)
+require("WRS2")
+library("ggExtra")
+library("car")
+library("readxl")
+
+
+```
+
+
+## SF_36_SCI
+
+```{r SF_36_SCI, echo=FALSE, message=FALSE, warning=FALSE}
+
+RAND <- read_excel("SF_36_Urdu.xlsx")
+#view(RAND)
+RAND <- RAND[c(1:11)]
+
+
+
+pre  <- subset(RAND, PrePost %like% "1")
+post <- subset(RAND, PrePost %like% "2")
+
+SF36df <- full_join(pre, post, by = "ID")
+SF36df$Phys      <- SF36df$Physical.y - SF36df$Physical.x
+SF36df$PhysRole  <- SF36df$Role_Physical.y - SF36df$Role_Physical.x
+SF36df$EmotRole  <- SF36df$Role_Emotional.y - SF36df$Role_Emotional.x
+SF36df$Energy    <- SF36df$Energy.y - SF36df$Energy.x
+SF36df$Emotional <- SF36df$Emotional.y - SF36df$Emotional.x
+SF36df$Social    <- SF36df$Social.y - SF36df$Social.x
+SF36df$Pain      <- SF36df$Pain.y - SF36df$Pain.x
+SF36df$GenH      <- SF36df$General_Health.y - SF36df$General_Health.x
+
+df        <- SF36df
+changeVal <- SF36df$Pain
+preVal    <- SF36df$Pain.x
+Group     <- SF36df$Group.x
+
+model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
+
+source("AncTable.R")
+anc_Table <- ancova_Table(df, changeVal, preVal, Group)
+
+```
+## ASIA_SCI
+
+```{r ASIA_SCI, echo=FALSE, message=FALSE, warning=FALSE}
+
+
+
+ASIA <- read_excel("ASIA.xlsx")
+#view(ASIA)
+RAND <- RAND[c(1:11)]
+
+
+
+pre  <- subset(RAND, PrePost %like% "1")
+post <- subset(RAND, PrePost %like% "2")
+
+SF36df <- full_join(pre, post, by = "ID")
+SF36df$Phys      <- SF36df$Physical.y - SF36df$Physical.x
+SF36df$PhysRole  <- SF36df$Role_Physical.y - SF36df$Role_Physical.x
+SF36df$EmotRole  <- SF36df$Role_Emotional.y - SF36df$Role_Emotional.x
+SF36df$Energy    <- SF36df$Energy.y - SF36df$Energy.x
+SF36df$Emotional <- SF36df$Emotional.y - SF36df$Emotional.x
+SF36df$Social    <- SF36df$Social.y - SF36df$Social.x
+SF36df$Pain      <- SF36df$Pain.y - SF36df$Pain.x
+SF36df$GenH      <- SF36df$General_Health.y - SF36df$General_Health.x
+
+df        <- SF36df
+changeVal <- SF36df$Pain
+preVal    <- SF36df$Pain.x
+Group     <- SF36df$Group.x
+
+model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
+
+source("AncTable.R")
+anc_Table <- ancova_Table(df, changeVal, preVal, Group)
+
+```
+
+## FIM_FAM
+
+```{r FIM_FAM, echo=FALSE, message=FALSE, warning=FALSE}
+
+FIM_FAM <- read_excel("FIM_FAM.xlsx")
+#view(FIM_FAM)
+
+pre  <- subset(FIM_FAM, PrePost %like% "1")
+post <- subset(FIM_FAM, PrePost %like% "2")
+
+df <- full_join(pre, post, by = "ID")
+df$FIM_Motor     <- df$FIM_Motor.y    - df$FIM_Motor.x
+df$FIM_COG       <- df$FIM_COG.y      - df$FIM_COG.x
+df$FF_Selfcare   <- df$FF_Selfcare.y  - df$FF_Selfcare.x
+df$FF_BladBowel  <- df$FF_BladBowel.y - df$FF_BladBowel.x
+df$FF_Loco       <- df$FF_Loco.y      - df$FF_Loco.x
+df$FF_Comm       <- df$FF_Comm.y      - df$FF_Comm.x
+df$FF_PsycSoc    <- df$FF_PsycSoc.y   - df$FF_PsycSoc.x
+df$FF_Think      <- df$FF_Think.y     - df$FF_Think.x
+
+
+changeVal <- df$FF_Comm
+preVal    <- df$FF_Comm.x
+Group     <- df$Group.x
+
+model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
+
+source("AncTable.R")
+anc_Table <- ancova_Table(df, changeVal, preVal, Group)
+
+```
