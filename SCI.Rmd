@@ -137,4 +137,77 @@ model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
 source("AncTable.R")
 anc_Table <- ancova_Table(df, changeVal, preVal, Group)
 
+FIM_FAM$PrePost <- as.factor(FIM_FAM$PrePost)
+
+model <-  lmer(FF_Think ~  Group * PrePost + (1|ID), data=FIM_FAM, REML=T, control = lmerControl(optimizer ="Nelder_Mead"))
+source("Lmer_Model_Table.R")
+lmer <- Lmer_Model_Plot(FIM_FAM, FIM_FAM$FF_Think,  model)
+lmer
+```
+
+
+## SSSMQ
+
+```{r SSSMQ, echo=FALSE, message=FALSE, warning=FALSE}
+
+SSSMQ <- read_excel("SSSMQ.xlsx")
+#view(SSSMQ)
+
+pre  <- subset(SSSMQ, PrePost %like% "1")
+post <- subset(SSSMQ, PrePost %like% "2")
+
+df <- full_join(pre, post, by = "ID")
+df$Ongoing_spinal_Pain     <- df$Ongoing_spinal_Pain.y    - df$Ongoing_spinal_Pain.x
+
+df$Days_Neck_Pain_Month       <- df$Days_Neck_Pain_Month.y      - df$Days_Neck_Pain_Month.x
+df$Days_UB_Pain_Month   <- df$Days_UB_Pain_Month.y  - df$Days_UB_Pain_Month.x
+df$Days_MB_Pain_Month  <- df$Days_MB_Pain_Month.y - df$Days_MB_Pain_Month.x
+df$Days_LB_Pain_Month       <- df$Days_LB_Pain_Month.y      - df$Days_LB_Pain_Month.x
+df$Days_Butt_Pain_Month       <- df$Days_Butt_Pain_Month.y      - df$Days_Butt_Pain_Month.x
+
+df$Hours_Neck_Pain_Per_Episode    <- df$Hours_Neck_Pain_Per_Episode.y   - df$Hours_Neck_Pain_Per_Episode.x
+df$Hours_UB_Pain_Per_Episode      <- df$Hours_UB_Pain_Per_Episode.y     - df$Hours_UB_Pain_Per_Episode.x
+df$Hours_MB_Pain_Per_Episode      <- df$Hours_MB_Pain_Per_Episode.y     - df$Hours_MB_Pain_Per_Episode.x
+df$Hours_LB_Pain_Per_Episode      <- df$Hours_LB_Pain_Per_Episode.y     - df$Hours_LB_Pain_Per_Episode.x
+df$Hours_Butt_Pain_Per_Episode      <- dfHours_Butt_Pain_Per_Episode.y     - df$Hours_Butt_Pain_Per_Episode.x
+
+df$Consec_Days_Neck_Pain_Month    <- df$Consec_Days_Neck_Pain_Month.y   - df$Consec_Days_Neck_Pain_Month.x
+df$Consec_DaysUB_Pain_Month    <- df$Consec_DaysUB_Pain_Month.y   - df$Consec_DaysUB_Pain_Month.x
+df$Consec_DaysMB_Pain_Month    <- df$Consec_DaysMB_Pain_Month.y   - df$Consec_DaysMB_Pain_Month.x
+df$Consec_DaysLB_Pain_Month    <- df$Consec_DaysLB_Pain_Month.y   - df$Consec_DaysLB_Pain_Month.x
+df$Consec__Butt_Pain_Month    <- df$Consec__Butt_Pain_Month.y   - df$Consec__Butt_Pain_Month.x
+
+df$Hache_freq    <- df$Hache_freq.y   - df$Hache_freq.x
+
+df$Ave_pain_intensity_week    <- df$Ave_pain_intensity_week.y   - df$Ave_pain_intensity_week.x
+df$Ave_pain_bearability_week    <- df$Ave_pain_bearability_week.y   - df$Ave_pain_bearability_week.x
+df$Pain_intensity_today    <- df$Pain_intensity_today.y   - df$Pain_intensity_today.x
+df$Pain_bearability_today    <- df$Pain_bearability_today.y   - df$Pain_bearability_today.x
+
+changeVal <- df$Pain_bearability_today
+preVal    <- df$Pain_bearability_today.x
+Group     <- df$Group.x
+
+model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
+
+source("AncTable.R")
+anc_Table <- ancova_Table(df, changeVal, preVal, Group)
+anc_Table
+
+
+# difference bw Pre groups
+K_test_Pres <-  kruskal.test(Ave_pain_bearability_week ~ Group, data = subset(SSSMQ, PrePost %like% "1"))
+preDiff <- subset(SSSMQ, PrePost %like% "1") %>% group_by(Group) %>%
+  dplyr::summarise(Medians = median(Ave_pain_bearability_week, na.rm = T), Mean = mean(Ave_pain_bearability_week, na.rm = T), SD = sd(Ave_pain_bearability_week, na.rm = T))
+postDiff <- subset(SSSMQ, PrePost %like% "2") %>% group_by(Group) %>%
+  dplyr::summarise(Medians = median(Ave_pain_bearability_week, na.rm = T), Mean = mean(Ave_pain_bearability_week, na.rm = T), SD = sd(Ave_pain_bearability_week, na.rm = T))
+
+
+model <-  lmer(Ave_pain_bearability_week ~  Group * PrePost + (1|ID), data=SSSMQ, REML=T, control = lmerControl(optimizer ="Nelder_Mead"))
+source("Lmer_Model_Table.R")
+lmer <- Lmer_Model_Plot(SSSMQ, SSSMQ$Ave_pain_bearability_week,  model)
+
+
+
+
 ```
