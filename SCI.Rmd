@@ -84,6 +84,7 @@ RAND <- RAND[c(1:11)]
 
 pre  <- subset(RAND, PrePost %like% "1")
 post <- subset(RAND, PrePost %like% "2")
+df <- data.frame(matrix(ncol = 5, nrow = 0))
 
 SF36df <- full_join(pre, post, by = "ID")
 SF36df$Phys      <- SF36df$Physical.y - SF36df$Physical.x
@@ -96,14 +97,17 @@ SF36df$Pain      <- SF36df$Pain.y - SF36df$Pain.x
 SF36df$GenH      <- SF36df$General_Health.y - SF36df$General_Health.x
 
 df        <- SF36df
-changeVal <- SF36df$Pain
-preVal    <- SF36df$Pain.x
+name      <- "GenH"
+changeVal <- SF36df$GenH
+preVal    <- SF36df$General_Health.x
 Group     <- SF36df$Group.x
 
 model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
 
 source("AncTable.R")
-anc_Table <- ancova_Table(df, changeVal, preVal, Group)
+anc_Table <- ancova_Table(df, changeVal, preVal, Group, name)
+
+df <- bind_rows(anc_Table[[2]])
 
 ```
 
@@ -128,14 +132,15 @@ df$FF_PsycSoc    <- df$FF_PsycSoc.y   - df$FF_PsycSoc.x
 df$FF_Think      <- df$FF_Think.y     - df$FF_Think.x
 
 
-changeVal <- df$FF_Comm
-preVal    <- df$FF_Comm.x
+changeVal <- df$FF_Loco
+name      <-   "FF_Loco"
+preVal    <- df$FF_Loco.x
 Group     <- df$Group.x
 
 model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
 
 source("AncTable.R")
-anc_Table <- ancova_Table(df, changeVal, preVal, Group)
+anc_Table <- ancova_Table(df, changeVal, preVal, Group, name)
 
 FIM_FAM$PrePost <- as.factor(FIM_FAM$PrePost)
 
