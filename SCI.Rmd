@@ -49,6 +49,9 @@ RAND <- RAND[c(1:11)]
 pre  <- subset(RAND, PrePost %like% "1")
 post <- subset(RAND, PrePost %like% "2")
 
+p1 <- pre %>% filter(Group %like% "1")
+tableC <-get_summary_stats(p1, show = c("min", "max","median", "iqr", "mean", "sd"))
+
 SF36df <- full_join(pre, post, by = "ID")
 SF36df$Phys      <- SF36df$Physical.y - SF36df$Physical.x
 SF36df$PhysRole  <- SF36df$Role_Physical.y - SF36df$Role_Physical.x
@@ -82,8 +85,11 @@ RAND <- RAND[c(1:11)]
 
 
 
-pre  <- subset(RAND, PrePost %like% "1")
-post <- subset(RAND, PrePost %like% "2")
+pre  <- subset(ASIA, PrePost %like% "1")
+
+p1 <- pre %>% filter(Group %like% "1")
+tableC <-get_summary_stats(p1, show = c("min", "max","median", "iqr", "mean", "sd"))
+
 df <- data.frame(matrix(ncol = 5, nrow = 0))
 
 SF36df <- full_join(pre, post, by = "ID")
