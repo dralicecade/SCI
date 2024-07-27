@@ -34,7 +34,17 @@ library("readxl")
 
 
 ```
+#demo data
 
+
+```{r Demo, echo=FALSE, message=FALSE, warning=FALSE}
+
+prop.test(x=18, n=22, p = c(0.50), correct = FALSE)
+
+
+prop.test(x=c((12 * .916),(10 * .7)),n=c(12,10 )) 
+
+```
 
 ## SF_36_SCI
 
@@ -166,6 +176,9 @@ SSSMQ <- read_excel("SSSMQ.xlsx")
 
 pre  <- subset(SSSMQ, PrePost %like% "1")
 post <- subset(SSSMQ, PrePost %like% "2")
+
+p1 <- post %>% filter(Group %like% "1")
+tableC <-get_summary_stats(p1, show = c("min", "max","median", "iqr", "mean", "sd"))
 
 df <- full_join(pre, post, by = "ID")
 df$Ongoing_spinal_Pain     <- df$Ongoing_spinal_Pain.y    - df$Ongoing_spinal_Pain.x
