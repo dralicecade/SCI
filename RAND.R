@@ -15,9 +15,11 @@ library("plotrix")
 
 
 
-RAND <- read_excel("SF_36_Urdu.xlsx")
+RAND <- read_excel("SF_36.xlsx")
 #view(RAND)
 
+RAND$Group[RAND$Group == "1"] <- "Chiro"
+RAND$Group[RAND$Group == "2"] <- "Control"
 
 RAND$PrePost <- as.factor(RAND$PrePost)
 RAND$Group <- as.factor(RAND$Group)
@@ -41,16 +43,16 @@ phys <- data_summary(RAND, varname="Physical",
 
 
 PFG <- ggplot(data=phys, aes(x=PrePost, y=Physical, group=Group))+
-  geom_line( aes(linetype=Group ), color="black", linewidth=2) +
-  geom_errorbar(aes(ymin=Physical-Physical_se, ymax=Physical+Physical_se, linetype=PrePost), color="black", width=.1, alpha=.5,
-                position=position_dodge(0.05))+
-  geom_point(aes(shape=Group), color="black", size = 5)+coord_cartesian(ylim = c(0,30))  +
+  geom_line( aes(linetype=Group ), color="black", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=Physical-Physical_se, ymax=Physical+Physical_se), color="black", width=.1, alpha=.5)+
+  geom_point(aes(shape=Group), color="black", size = 5) + coord_cartesian(ylim = c(0,30))  +
   labs(title="Physical functioning",x="", y = "Percentage") +
   theme_classic() +
   theme(axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 14),
         legend.title = element_blank(), legend.position = "bottom") + 
   scale_x_discrete(limits=c("1","2"), labels=c("Pre", "Post"))
+  
 ggsave("PFG.png", width = 15, height = 10, units = "cm")
 
 
@@ -60,17 +62,16 @@ R_phys <- data_summary(RAND, varname="Role_Physical",
 df2 <- merge(x=phys, y=R_phys, by = c("Group", "PrePost"))
 
 RPHG <- ggplot(data=R_phys, aes(x=PrePost, y=Role_Physical, group=Group))+
-  geom_line( aes(linetype=Group ), color="blue", linewidth=2) +
-  geom_errorbar(aes(ymin=Role_Physical-Role_Physical_se, ymax=Role_Physical+Role_Physical_se, linetype=PrePost), color="blue", width=.1, alpha=.5,
-                position=position_dodge(0.05))+
+  geom_line( aes(linetype=Group ), color="blue", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=Role_Physical-Role_Physical_se, ymax=Role_Physical+Role_Physical_se), color="blue", width=.1, alpha=.5)+
   geom_point(aes(shape=Group), color="blue", size = 5)+ #coord_cartesian(ylim = c(20,100))  +
   labs(title="Physical role limitations",x="", y = "Percentage") +
-
   theme_classic() +
   theme(axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 14),
         legend.title = element_blank(), legend.position = "bottom")+ 
   scale_x_discrete(limits=c("1","2"), labels=c("Pre", "Post"))
+
 ggsave("RPHG.png", width = 15, height = 10, units = "cm")
 
 
@@ -80,10 +81,8 @@ R_emot <- data_summary(RAND, varname="Role_Emotional",
 df2 <- merge(x= df2, y= R_emot, by = c("Group", "PrePost"))
 
 REP <- ggplot(data=R_emot, aes(x=PrePost, y=Role_Emotional, group=Group))+
-  geom_line( aes(linetype=Group ), color="#00CC00", linewidth=2) +
-  geom_errorbar(aes(ymin=Role_Emotional-Role_Emotional_se, ymax=Role_Emotional+Role_Emotional_se, 
-                    linetype=Group), color="#00CC00", width=.3, alpha=.5, linewidth=2,
-                position=position_dodge(0.05))+
+  geom_line( aes(linetype=Group ), color="#00CC00", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=Role_Emotional-Role_Emotional_se, ymax=Role_Emotional+Role_Emotional_se), color="#00CC00", width=.1, alpha=.5)+
   geom_point(aes(shape=Group), color="#00CC00",size = 5)+ #coord_cartesian(ylim = c(20,100))  +
   labs(title="Emotional role limitations",x="", y = "Percentage") +
   theme_classic() +
@@ -99,10 +98,8 @@ energy <- data_summary(RAND, varname="Energy",
 df2 <- merge(x= df2, y= energy, by = c("Group", "PrePost"))
 
 EFG <- ggplot(data=energy, aes(x=PrePost, y=Energy, group=Group))+
-  geom_line( aes(linetype=Group ), color="dark green", linewidth=2) +
-  geom_errorbar(aes(ymin=Energy-Energy_se, ymax=Energy+Energy_se, 
-                    linetype=Group), color="dark green", linewidth=2, width=.1, alpha=.5,
-                position=position_dodge(0.05))+
+  geom_line( aes(linetype=Group ), color="dark green", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=Energy-Energy_se, ymax=Energy+Energy_se), color="dark green",  width=.1, alpha=.5)+
   geom_point(aes(shape=Group), color="dark green", size = 5)+#coord_cartesian(ylim = c(20,100))  +
   labs(title="Energy & fatigue",x="", y="Percentage") +
   theme_classic() +
@@ -119,10 +116,8 @@ emot <- data_summary(RAND, varname="Emotional",
 df2 <- merge(x= df2, y= emot, by = c("Group", "PrePost"))
 
 EMG <- ggplot(data=emot, aes(x=PrePost, y=Emotional, group=Group))+
-  geom_line( aes(linetype=Group ), color="dark orange", linewidth=2) +
-  geom_errorbar(aes(ymin=Emotional-Emotional_se, ymax=Emotional+Emotional_se, 
-                    linetype=Group), color="dark orange", width=.1, alpha=.5, linewidth=2,
-                position=position_dodge(0.05))+
+  geom_line( aes(linetype=Group ), color="dark orange", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=Emotional-Emotional_se, ymax=Emotional+Emotional_se), color="dark orange", width=.1, alpha=.5)+
   geom_point(aes(shape=Group), color="dark orange", size = 5)+#coord_cartesian(ylim = c(20,100))  +
   labs(title="Emotional wellbeing",x="", y="Percentage") +
   theme_classic() +
@@ -140,10 +135,8 @@ df2 <- merge(x= df2, y= SF, by = c("Group", "PrePost"))
 
 
 SFG <- ggplot(data=SF, aes(x=PrePost, y=Social, group=Group))+
-  geom_line( aes(linetype=Group ), color="maroon2", linewidth=2) +
-  geom_errorbar(aes(ymin=Social-Social_se, ymax=Social+Social_se, 
-                    linetype=Group), color="maroon2", linewidth=2, width=.1, alpha=.5,
-                position=position_dodge(0.05))+
+  geom_line( aes(linetype=Group ), color="maroon2", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=Social-Social_se, ymax=Social+Social_se), color="maroon2",  width=.1, alpha=.5)+
   geom_point(aes(shape=Group), color="maroon2", size = 5)+#coord_cartesian(ylim = c(20,100))  +
   labs(title="Social functioning",x="", y="Percentage") +
   theme_classic() +
@@ -162,10 +155,8 @@ df2 <- merge(x= df2, y= P, by = c("Group", "PrePost"))
 
 
 PG <- ggplot(data=P, aes(x=PrePost, y=Pain, group=Group))+
-  geom_line( aes(linetype=Group ), color="darkorchid4", linewidth=2) +
-  geom_errorbar(aes(ymin=Pain-Pain_se, ymax=Pain+Pain_se, 
-                    linetype=Group), color="darkorchid4", linewidth=2, width=.1, alpha=.5,
-                position=position_dodge(0.05))+
+  geom_line( aes(linetype=Group ), color="darkorchid4", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=Pain-Pain_se, ymax=Pain+Pain_se), color="darkorchid4",  width=.1, alpha=.5)+
   geom_point(aes(shape=Group), color="darkorchid4", size = 5)+#coord_cartesian(ylim = c(20,100))  +
   labs(title="Pain",x="", y="Percentage") +
   theme_classic() +
@@ -186,10 +177,8 @@ write_xlsx(Full_RAND,"C:\\Users\\Alice Cade\\Documents\\R_Analysis\\SCI\\Full_RA
 write_xlsx(Full_RAND,"C:\\Users\\alice.cade\\Downloads\\Full_RAND.xlsx")
 
 GHG <- ggplot(data=GH, aes(x=PrePost, y=General_Health, group=Group))+
-  geom_line( aes(linetype=Group ), color="royalblue4", linewidth=2) +
-  geom_errorbar(aes(ymin=General_Health-General_Health_se, ymax=General_Health+General_Health_se, 
-                    linetype=Group), color="royalblue4", linewidth=2, width=.1, alpha=.5,
-                position=position_dodge(0.05))+
+  geom_line( aes(linetype=Group ), color="royalblue4", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=General_Health-General_Health_se, ymax=General_Health+General_Health_se), color="royalblue4", width=.1, alpha=.5)+
   geom_point(aes(shape=Group), color="royalblue4", size = 3)+#coord_cartesian(ylim = c(20,100))  +
   labs(title="General health",x="", y="Percentage") +
   theme_classic() +

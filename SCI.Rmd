@@ -50,7 +50,7 @@ prop.test(x=c((12 * .916),(10 * .7)),n=c(12,10 ))
 
 ```{r SF_36_SCI, echo=FALSE, message=FALSE, warning=FALSE}
 
-RAND <- read_excel("SF_36_Urdu.xlsx")
+RAND <- read_excel("SF_36.xlsx")
 #view(RAND)
 RAND <- RAND[c(1:11)]
 
@@ -86,8 +86,6 @@ anc_Table <- ancova_Table(df, changeVal, preVal, Group)
 ## ASIA_SCI
 
 ```{r ASIA_SCI, echo=FALSE, message=FALSE, warning=FALSE}
-
-
 
 ASIA <- read_excel("ASIA.xlsx")
 #view(ASIA)
@@ -231,7 +229,31 @@ model <-  lmer(Ave_pain_bearability_week ~  Group * PrePost + (1|ID), data=SSSMQ
 source("Lmer_Model_Table.R")
 lmer <- Lmer_Model_Plot(SSSMQ, SSSMQ$Ave_pain_bearability_week,  model)
 
+# Plot bearability
+preDiff$PrePost <- 1
+postDiff$PrePost <- 2
+
+bearDF <- rbind(preDiff, postDiff)
+bearDF$Group <- as.numeric(bearDF$Group)
+bearDF$Group[bearDF$Group == 1] <- "Chiro"
+bearDF$Group[bearDF$Group == 2] <- "Control"
+save(bearDF, file = "bearDF.Rda")
+
+bearDF$PrePost <- as.factor(bearDF$PrePost)
+bearDF$Group <- as.factor(bearDF$Group)
 
 
+bear <- ggplot(data=bearDF, aes(x=PrePost, y=Mean, group=Group))+
+  geom_line( aes(linetype=Group ), color="royalblue4", linewidth=2, show.legend = F) +
+  geom_errorbar(aes(ymin=Mean-SD, ymax=Mean+SD), color="royalblue4", width=.1, alpha=.5)+
+  geom_point(aes(shape=Group), color="royalblue4", size = 3)+
+  labs(title="Weekly pain bearability",x="", y="") +
+  theme_classic() +
+  theme(axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 14),
+        legend.title = element_blank(), legend.position = "bottom")+ 
+  scale_x_discrete(limits=c("1","2"), labels=c("Pre", "Post"))
+
+ggsave("bear.png", width = 15, height = 10, units = "cm")
 
 ```
