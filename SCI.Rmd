@@ -80,7 +80,7 @@ Group     <- SF36df$Group.x
 model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
 
 source("AncTable.R")
-anc_Table <- ancova_Table(df, changeVal, preVal, Group)
+anc_Table <- ancova_Table(df, changeVal, preVal, Group, "SF-36")
 
 ```
 ## ASIA_SCI
@@ -119,7 +119,7 @@ Group     <- SF36df$Group.x
 model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
 
 source("AncTable.R")
-anc_Table <- ancova_Table(df, changeVal, preVal, Group, name)
+anc_Table <- ancova_Table(df, changeVal, preVal, Group, "ASIA")
 
 df <- bind_rows(anc_Table[[2]])
 
@@ -154,7 +154,12 @@ Group     <- df$Group.x
 model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
 
 source("AncTable.R")
-anc_Table <- ancova_Table(df, changeVal, preVal, Group, name)
+anc_Table <- ancova_Table(df, changeVal, preVal, Group, "name")
+
+
+
+
+
 
 FIM_FAM$PrePost <- as.factor(FIM_FAM$PrePost)
 
@@ -207,13 +212,14 @@ df$Pain_intensity_today    <- df$Pain_intensity_today.y   - df$Pain_intensity_to
 df$Pain_bearability_today    <- df$Pain_bearability_today.y   - df$Pain_bearability_today.x
 
 changeVal <- df$Pain_bearability_today
+name <- "Pain_bearability_today"
 preVal    <- df$Pain_bearability_today.x
 Group     <- df$Group.x
 
 model <- Anova(lm(changeVal ~ Group + preVal, data = df, type="II"))
 
 source("AncTable.R")
-anc_Table <- ancova_Table(df, changeVal, preVal, Group)
+anc_Table <- ancova_Table(df, changeVal, preVal, Group, name)
 anc_Table
 
 
@@ -227,7 +233,7 @@ postDiff <- subset(SSSMQ, PrePost %like% "2") %>% group_by(Group) %>%
 
 model <-  lmer(Ave_pain_bearability_week ~  Group * PrePost + (1|ID), data=SSSMQ, REML=T, control = lmerControl(optimizer ="Nelder_Mead"))
 source("Lmer_Model_Table.R")
-lmer <- Lmer_Model_Plot(SSSMQ, SSSMQ$Ave_pain_bearability_week,  model)
+lmer <- Lmer_Model_Plot(SSSMQ, SSSMQ$Ave_pain_bearability_week,  model, "SSSQM")
 
 # Plot bearability
 preDiff$PrePost <- 1
